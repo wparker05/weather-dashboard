@@ -2,6 +2,8 @@ var btn = document.querySelector('#submit-btn');
 var text = document.querySelector('#text-input');
 var now = document.querySelector('#todayWeather');
 var week = document.querySelector('#weekWeather');
+var btnList = document.querySelector('#button-list');
+var count = 0;
 
 var uvIndex= function (lat, lon) {
     var uvUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=e19c35c86c9eaa0f15bd8bb58efaa58c`;
@@ -19,6 +21,7 @@ var uvIndex= function (lat, lon) {
 }
 
 var today  = function(city) {
+    if(!city) location.replace('./index.html');
 var url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=e19c35c86c9eaa0f15bd8bb58efaa58c`;
 
 fetch(url)
@@ -55,6 +58,7 @@ fetch(url)
 }
 
 var fiveCast = function(city){
+    if(!city) location.replace('./index.html');
     var fiveDayUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=e19c35c86c9eaa0f15bd8bb58efaa58c`;
 
     fetch(fiveDayUrl)
@@ -66,7 +70,7 @@ var fiveCast = function(city){
                var box = document.createElement('div');
                box.setAttribute('class', 'col-2 forecast bg-primary bg-graident');
                var dayTime = document.createElement('p');
-               dayTime.textContent = data.list[i].dt_txt.replace('12:00:00','');
+               dayTime.textContent = data.list[i].dt_txt.slice(0,11);
                var showTemp = document.createElement('p');
                showTemp.textContent = `Temp: ${parseInt(data.list[i].main.temp)} F`;
                var showHum = document.createElement('p');
@@ -86,14 +90,40 @@ var fiveCast = function(city){
         })
 }
 
+var btnListClicked = function( id ,input) {
+     var name = document.getElementById(`${id}`);
+    name.addEventListener('click', function(){
+        week.textContent = '';
+        now.textContent= '';
+        today(input);
+        fiveCast(input);
 
+    })
+
+}
+
+var buttonList = function(input){
+    var btnCreate=document.createElement('button');
+    btnCreate.setAttribute('id', `btn${count}`)
+    btnCreate.setAttribute('class', `btn-count btn-index`);
+    btnCreate.textContent = input;
+
+    btnList.append(btnCreate);
+
+    btnListClicked(`btn${count}`, input);
+    count++;
+}
 
 
 btn.addEventListener('click', function(event){
     event.preventDefault();
+    if(!text.value) location.replace('./index.html');
+    week.textContent = '';
+    now.textContent= '';
     var cityInput = text.value
 
     today(cityInput);
     fiveCast(cityInput);
-    
+    buttonList(cityInput);
+    text.value= "";
 })
