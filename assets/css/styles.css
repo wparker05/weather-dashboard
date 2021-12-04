@@ -5,3 +5,17 @@ form{
     margin-bottom: 20px;
     padding-bottom: 20px;
 }
+#todayWeather{
+    display:none;
+    border:3px solid black;
+    margin-bottom: 30px;
+    padding-left: 15px;
+
+}
+
+.forecast {
+    color:white;
+    border: 3px solid black;
+    margin: 0 15px;
+    padding:15px 0 15px 10px;
+}
