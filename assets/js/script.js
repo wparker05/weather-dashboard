@@ -10,7 +10,8 @@ var uvIndex = function (lat, lon) {
 
     fetch(uvUrl)
         .then(function (response) {
-            return response.json();
+            if (response.ok) return response.json();
+            else location.replace('./index.html');
         })
         .then(function (data) {
             var showIndex = document.createElement('p');
@@ -26,15 +27,17 @@ var today = function (city) {
 
     fetch(url)
         .then(function (response) {
-            return response.json();
+            if(response.ok) return response.json();
+            else location.replace('./index.html');
         })
         .then(function (data) {
-
+            console.log(data);
             var cityName = document.createElement('h2');
-            // var img = document.createElement('img');
-            // var icon = data.weather[0].icon;
-            // img.setAttribute('src',`http://openweathermap.org/img/wn/${icon}@2x.png`);
+            var img = document.createElement('img');
+            var icon = data.weather[0].icon;
+            img.setAttribute('src',`http://openweathermap.org/img/wn/${icon}@2x.png`);
             cityName.textContent = `${data.name}`;
+            cityName.append(img);
             var showTemp = document.createElement('p');
             showTemp.textContent = `Temp: ${parseInt(data.main.temp)} F`;
             var showHum = document.createElement('p');
@@ -63,7 +66,8 @@ var fiveCast = function (city) {
 
     fetch(fiveDayUrl)
         .then(function (response) {
-            return response.json();
+            if(response.ok) return response.json();
+            else location.replace('./index.html');
         })
         .then(function (data) {
             for (var i = 3; i < data.list.length; i += 8) {
@@ -71,6 +75,9 @@ var fiveCast = function (city) {
                 box.setAttribute('class', 'col-2 forecast bg-primary bg-graident');
                 var dayTime = document.createElement('p');
                 dayTime.textContent = data.list[i].dt_txt.slice(0, 11);
+                var img = document.createElement('img');
+                var icon = data.list[i].weather[0].icon;
+                img.setAttribute('src',`http://openweathermap.org/img/wn/${icon}@2x.png`);
                 var showTemp = document.createElement('p');
                 showTemp.textContent = `Temp: ${parseInt(data.list[i].main.temp)} F`;
                 var showHum = document.createElement('p');
@@ -79,6 +86,7 @@ var fiveCast = function (city) {
                 showWind.textContent = `Wind: ${data.list[i].wind.speed} MPH`;
 
                 box.append(dayTime);
+                box.append(img);
                 box.append(showTemp);
                 box.append(showWind);
                 box.append(showHum);
@@ -103,9 +111,6 @@ var btnListClicked = function (id, input) {
     })
 
 }
-
-
-
 
 var buttonList = function (input) {
     var btnStorage = localStorage.getItem('city') || JSON.stringify({ buttons: [] });
@@ -134,9 +139,6 @@ if (btnList.innerHTML === "") {
     }
 }
 
-
-
-
 btn.addEventListener('click', function (event) {
     event.preventDefault();
     if (!text.value) location.replace('./index.html');
@@ -146,6 +148,6 @@ btn.addEventListener('click', function (event) {
 
     today(cityInput);
     fiveCast(cityInput);
-    buttonList(cityInput);
+     buttonList(cityInput);
     text.value = "";
 })
