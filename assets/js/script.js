@@ -102,17 +102,28 @@ var btnListClicked = function( id ,input) {
 
 }
 
+
+
+
 var buttonList = function(input){
+   
     var btnCreate=document.createElement('button');
     btnCreate.setAttribute('id', `btn${count}`)
     btnCreate.setAttribute('class', `btn-count btn-index`);
     btnCreate.textContent = input;
-
+    var btnStorage = localStorage.getItem('city') || JSON.stringify({buttons:[]});
+    var prevBtn = JSON.parse(btnStorage);
+    prevBtn.buttons.push(input);
+    localStorage.setItem('city', JSON.stringify(prevBtn));
     btnList.append(btnCreate);
 
     btnListClicked(`btn${count}`, input);
     count++;
 }
+
+
+console.log(localStorage.getItem(JSON.stringify('city')))
+
 
 
 btn.addEventListener('click', function(event){
